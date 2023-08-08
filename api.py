@@ -91,11 +91,42 @@ def promote_user(public_id):
     return jsonify({'message': 'The user has been promoted! | O usuário foi promovido!'})
 
 @app.route('/user/<public_id>', methods=['DELETE'])
-def delete_user():
-    return ''
+def delete_user(public_id):
+    user = User.query.filter_by(public_id=public_id).first()
+
+    if not user:
+        return jsonify({'message': 'No  user found! | Nenhum usuário encontrado!'})
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({'message': 'The user has been deleted!'})
+
+@app.route('/login')
+def login():
+    auth = request.authorization
+
+    if not auth or not auth.username or not auth.password:
+        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+
+    user = User.query.filter_by(name=auth.username).first()
 
 if __name__ == '__main__':
     with app.app_context():
         # Criar as tabelas no banco de dados
         db.create_all()
     app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
