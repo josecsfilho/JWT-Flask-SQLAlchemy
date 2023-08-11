@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
@@ -114,12 +115,20 @@ def login():
     if not user:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-    if check_password_hash(user.password, auth.password)
-        token = jwt.encode({'public_id': user.public_id, 'exp': datatime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+    if auth and sha256_crypt.verify(auth.password, user.password):
+        token = create_access_token(identity=auth.username)
 
-        return jsonify({'token': token.decode('UTF-8')})
+        return jsonify({'token': token})
 
-    return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    return make_response('Could verify!', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+
+    # if check_password_hash(user.password, auth.password)
+    #     token = jwt.encode({'public_id': user.public_id, 'exp': datatime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+    #
+    #     return jsonify({'token': token.decode('UTF-8')})
+    #
+    # return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
 
 if __name__ == '__main__':
